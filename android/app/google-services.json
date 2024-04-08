@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "745324114422",
+    "project_id": "poc-project-25db5",
+    "storage_bucket": "poc-project-25db5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745324114422:android:2d0e1cf389b21090ebd7d7",
+        "android_client_info": {
+          "package_name": "com.AwesomeProject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBALBk7i800DaEyN5S4453sBQ0MB1xdMI4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,16 @@
+current directory: /Users/cvmacmini/Desktop/AwesomeProject/vendor/bundle/ruby/2.7.0/gems/nkf-0.2.0/ext/nkf
+/Users/cvmacmini/.rvm/rubies/ruby-2.7.4/bin/ruby -I /Users/cvmacmini/.rvm/rubies/ruby-2.7.4/lib/ruby/2.7.0 -r ./siteconf20240305-10433-1ugvez.rb extconf.rb
+creating Makefile
+
+current directory: /Users/cvmacmini/Desktop/AwesomeProject/vendor/bundle/ruby/2.7.0/gems/nkf-0.2.0/ext/nkf
+make "DESTDIR=" clean
+
+current directory: /Users/cvmacmini/Desktop/AwesomeProject/vendor/bundle/ruby/2.7.0/gems/nkf-0.2.0/ext/nkf
+make "DESTDIR="
+compiling nkf.c
+linking shared-object nkf.bundle
+ld: warning: -multiply_defined is obsolete
+
+current directory: /Users/cvmacmini/Desktop/AwesomeProject/vendor/bundle/ruby/2.7.0/gems/nkf-0.2.0/ext/nkf
+make "DESTDIR=" install
+/opt/homebrew/opt/coreutils/bin/ginstall -c -m 0755 nkf.bundle ./.gem.20240305-10433-1pnyu0

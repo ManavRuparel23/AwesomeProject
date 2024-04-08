@@ -1,0 +1,20 @@
+export const Colors = {
+    blue_clr:'blue',
+    red_clr:'red',
+    brown_clr:'brown',
+    green_clr:'green',
+    black_clr:'black',
+    gray_clr:'gray',
+    white_clr:'white',
+
+    primary_clr:'#EA6D39',
+    blue_text_clr:'#163959',
+    back_background_clr:'#e8e8e8',
+    placeholder_text_clr:'#0000004D',
+    list_image_border_clr:'#33333326',
+    dropdown_border_clr:'#DDDDDD',
+    status_open_clr:'#007328',
+    status_close_clr:'#c00114',
+    search_bg_clr:'#FFFFFF',
+    list_border_clr:'#CEC2EB',
+};

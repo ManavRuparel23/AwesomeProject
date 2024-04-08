@@ -1,0 +1,25 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/Fonts/LexendDecaLight.ttf",
+      "sha1": "30d4f395b9d847fae9174f6ffed7749ea7bd6bfb"
+    },
+    {
+      "path": "src/assets/Fonts/LexendDecaMedium.ttf",
+      "sha1": "ab665bd77c6d32b4ddb555d2508fde44d384c822"
+    },
+    {
+      "path": "src/assets/Fonts/LexendDecaRegular.ttf",
+      "sha1": "68dad5183767d1ebf077be1ddb622a7586f28384"
+    },
+    {
+      "path": "src/assets/Fonts/LexendDecaSemiBold.ttf",
+      "sha1": "f79ea2615b597db5e10776fb1889b783283aeffc"
+    },
+    {
+      "path": "src/assets/Fonts/PoppinsMedium.ttf",
+      "sha1": "283f21b44efbdbf276ba802be2d949a36bbc4233"
+    }
+  ]
+}
