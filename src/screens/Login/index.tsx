@@ -19,14 +19,14 @@ const Login = ({navigation}) =>{
 
     const handleLogin = async () => {
         try {
-          // Perform login actions using Firebase Auth
           const userCredential = await Auth().signInWithEmailAndPassword(email, password);
           const user = userCredential.user;
           console.log('User logged in:', user);
           Alert.alert('Success', 'User Login successful!');
           
           navigation.navigate('Tabs');
-        } catch (error) {
+        } 
+        catch (error) {
           console.error('Error logging in:', error.message);
           Alert.alert('Error', error.message);
         }
