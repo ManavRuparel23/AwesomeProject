@@ -13,9 +13,20 @@ import ServiceProviderFilterPopup from './src/screens/ServiceProviderFilterPopup
 import { Colors } from './src/theme/colors';
 import { Fonts } from './src/Constants';
 import { Images } from './src/theme/images';
+import SignUp from './src/screens/Signup';
+import Login from './src/screens/Login';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+const AuthStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Signup" component={SignUp} />
+    </Stack.Navigator>
+  );
+};
 const HomeStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -115,7 +126,13 @@ const App = () => {
   return (
     <GestureHandlerRootView>
       <NavigationContainer>
-          <TabNavigator />
+        <Stack.Navigator initialRouteName="Auth" screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Auth" component={AuthStack} />
+          <Stack.Screen name="Tabs" component={TabNavigator} />
+          <Stack.Screen name="ServiceProviderList" component={ServiceProviderList} />
+          <Stack.Screen name="ServiceProviderDetails" component={ServiceProviderDetails} />
+          <Stack.Screen name="ServiceProviderFilterPopup" component={ServiceProviderFilterPopup} />
+        </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>
   );

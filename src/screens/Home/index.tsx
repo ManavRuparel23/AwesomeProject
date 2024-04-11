@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, Text, View, TouchableOpacity, Image, Linking , ScrollView, Button } from 'react-native';
+import { FlatList, Text, View, TouchableOpacity, Image,Alert, Linking , ScrollView, Button, Platform } from 'react-native';
 import { styles } from './styles';
 import { Images } from '../../theme/images';
 import { Strings } from "../../theme/strings";
@@ -7,7 +7,10 @@ import BackgroundImage from "../../Components/BackgroundImage";
 import firestore from '@react-native-firebase/firestore';
 import Analytics from "@react-native-firebase/analytics";
 import crashlytics from '@react-native-firebase/crashlytics';
-const renderItem = ({ item, navigation }) => {
+import messaging from "@react-native-firebase/messaging";
+import usePushNotification from "../../utils/CommonUtils";
+
+const renderItem = ({ item , navigation }) => {
     if(item.name === 'Food'){
         return (
             <TouchableOpacity style={styles.itemContainer} onPress={() => navigation.navigate('ServiceProviderList')}>
@@ -59,6 +62,32 @@ async function onSignIn(user) {
   
 
 const Home = ({ navigation }) => {
+    const {
+        requestUserPermission,
+        getFCMToken,
+        listenToBackgroundNotifications,
+        listenToForegroundNotifications,
+        onNotificationOpenedAppFromBackground,
+        onNotificationOpenedAppFromQuit,
+      } = usePushNotification();
+
+      useEffect(() => {
+        const listenToNotifications = () => {
+          try {
+            getFCMToken();
+            requestUserPermission();
+            onNotificationOpenedAppFromQuit();
+            listenToBackgroundNotifications();
+            listenToForegroundNotifications();
+            onNotificationOpenedAppFromBackground();
+          } catch (error) {
+            console.log(error);
+          }
+        };
+    
+        listenToNotifications();
+      }, []);
+
     const [categoriesData, setCategoriesData] = useState([]);
 
     useEffect(() => {
@@ -86,7 +115,7 @@ const Home = ({ navigation }) => {
         const body = 'Write your feedback here';
         const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
 
-        console.log('Sending feedback email to:', email);
+        console.log('Sending feedback email to: ', email);
         console.log('Subject:', subject);
         console.log('Body:', body);
 
@@ -137,10 +166,11 @@ const Home = ({ navigation }) => {
                                 email: 'phoenix@example.com',
                                 credits: 42,
                             })
-                            }
-                        />
+                        }
+                    />
                     <Button title="test crash" onPress={() => crashlytics().crash()} />
                     <Button title="CustomEvent" onPress={CustomEvent}/> */}
+
                     <TouchableOpacity style={styles.buttoncontainer} onPress={() => navigation.navigate('Categories')}>
                         <Text style={styles.button_text}>{Strings.home_explore_category}</Text>
                     </TouchableOpacity>

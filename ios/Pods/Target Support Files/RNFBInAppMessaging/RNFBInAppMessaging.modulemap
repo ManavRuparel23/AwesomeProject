@@ -1,0 +1,6 @@
+framework module RNFBInAppMessaging {
+  umbrella header "RNFBInAppMessaging-umbrella.h"
+
+  export *
+  module * { export * }
+}

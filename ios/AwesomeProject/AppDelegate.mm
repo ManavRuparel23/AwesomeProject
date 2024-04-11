@@ -11,6 +11,7 @@
   [FIRApp configure];
   [GMSServices provideAPIKey:@"AIzaSyDUX38ksb2tHxTCx72UJhT5lV-0pu6t42Q"];
   self.moduleName = @"AwesomeProject";
+
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
@@ -31,5 +32,6 @@
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
 }
+
 
 @end
