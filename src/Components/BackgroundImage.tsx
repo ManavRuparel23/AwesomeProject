@@ -1,9 +1,9 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, View } from 'react-native';
+import { ImageBackground, SafeAreaView, StyleSheet, View } from 'react-native';
 
 const BackgroundImage = ({ children, backgroundImage, headerContent }) => {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         {headerContent}
       </View>
@@ -12,7 +12,7 @@ const BackgroundImage = ({ children, backgroundImage, headerContent }) => {
           <View style={styles.content}>{children}</View>
         </ImageBackground>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

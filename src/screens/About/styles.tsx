@@ -6,7 +6,6 @@ export const styles = StyleSheet.create({
 
     header_container: {
         flexDirection: 'row',
-        marginTop: Platform.OS === 'ios' ? 20 : 0,
         justifyContent: 'center',
         backgroundColor: Colors.white_clr,
         padding: 10,
@@ -21,6 +20,8 @@ export const styles = StyleSheet.create({
     logo_icon:{
         color:Colors.gray_clr,
         verticalAlign:'middle',
+        height:33,
+        width:80
     },
 
     container:{
@@ -44,7 +45,8 @@ export const styles = StyleSheet.create({
     },
 
     about_detail_icon:{
-        marginBottom:10
+        marginBottom:10,
+        width:'auto'
     },
 
     about_description:{

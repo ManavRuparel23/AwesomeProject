@@ -6,7 +6,6 @@ export const styles = StyleSheet.create({
 
     header_container:{
         flexDirection: 'row',
-        marginTop: Platform.OS === 'ios' ? 20 : 0,
         backgroundColor: Colors.white_clr,
         padding: 10,
     },
@@ -15,7 +14,7 @@ export const styles = StyleSheet.create({
         alignSelf:'center',
         backgroundColor:Colors.back_background_clr,
         height:28,
-        width:'7.7%',
+        width:'7%',
         justifyContent:'center',
         borderRadius:15,
     },
@@ -25,7 +24,7 @@ export const styles = StyleSheet.create({
     },
 
     logo_container:{
-        flex: 1, 
+        flex: 1,
         flexDirection: 'row',
         justifyContent: 'center',
         marginRight:10
@@ -34,6 +33,8 @@ export const styles = StyleSheet.create({
     logo_icon:{
         alignItems: 'center',
         justifyContent: 'center',
+        height:33,
+        width:80
     },
 
     separator: {
@@ -43,7 +44,7 @@ export const styles = StyleSheet.create({
 
     nearby_text_container:{
         marginHorizontal:18,
-        marginBottom:10
+        marginVertical:10
     },
 
     nearby_text:{
@@ -58,7 +59,7 @@ export const styles = StyleSheet.create({
         borderColor:Colors.primary_clr,
         backgroundColor:Colors.white_clr,
         borderWidth:1,
-        width:'90%',
+        width:'92%',
         alignSelf:'center',
         marginVertical:5,
         borderRadius:10,
@@ -136,11 +137,12 @@ export const styles = StyleSheet.create({
         height:'auto',
         borderColor:Colors.primary_clr,
         backgroundColor:Colors.white_clr,
-        marginHorizontal:12,
-        marginVertical:12,
         borderWidth:1,
         borderRadius:10,
         padding:10,
+        width:'92%',
+        alignSelf:'center',
+        marginTop:10
     },
 
     main_container:{

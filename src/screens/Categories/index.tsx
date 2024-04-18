@@ -1,6 +1,6 @@
 import React ,{useEffect, useRef,useState} from "react";
 import {styles} from './styles';
-import { View ,Text, TextInput,FlatList, ScrollView , Image } from "react-native";
+import { View ,Text, TextInput,FlatList, ScrollView , Image , SafeAreaView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
@@ -15,14 +15,15 @@ const renderItem = ({ item , navigation }) => {
             <TouchableOpacity onPress={() => navigation.navigate('ServiceProviderList')}
                 style={styles.itemContainer}>
                 <View style={styles.list_image_container}>
-                    <Image
+                    {/* <Image
                         source={
                             item.image
                             ? {uri: item.image + `?${Math.random()}`}
                             : Images.common
                         }
                         style={styles.list_icon}
-                    />
+                    /> */}
+                    <Image source={{ uri: item.image }} style={styles.list_icon} />
                 </View>
                 <Text style={styles.category_name}>{item.name}</Text>
                 <Image source={Images.next} />
@@ -32,14 +33,15 @@ const renderItem = ({ item , navigation }) => {
         return (
             <View style={styles.itemContainer}>
                 <View style={styles.list_image_container}>
-                    <Image
+                    {/* <Image
                         source={
                             item.image
                             ? {uri: item.image + `?${Math.random()}`}
                             : Images.common
                         }
                         style={styles.list_icon}
-                    />
+                    /> */}
+                    <Image source={{ uri: item.image }} style={styles.list_icon} />
                 </View>
                 <Text style={styles.category_name}>{item.name}</Text>
                 <Image source={Images.next} />
@@ -50,6 +52,8 @@ const renderItem = ({ item , navigation }) => {
 
 const Categories = ( { navigation } ) =>{
     const [categoriesData, setRestaurantData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
     useEffect(() => {
         const fetchcategoriesData = async () => {
             try {
@@ -62,12 +66,20 @@ const Categories = ( { navigation } ) =>{
                 }));
                 console.log('categories Data:', data);
                 setRestaurantData(data);
+                setFilteredData(data);
             } catch (error) {
                 console.error('Error fetching categories data: ', error);
             }
         };
         fetchcategoriesData();
     }, []);
+    const handleSearch = (text) => {
+        setSearchQuery(text);
+        const filtered = categoriesData.filter(item =>
+            item.name.toLowerCase().includes(text.toLowerCase())
+        );
+        setFilteredData(filtered);
+    };
     const [imageUrl, setImageUrl] = useState(undefined);
         useEffect(() => {
             storage()
@@ -98,11 +110,12 @@ const Categories = ( { navigation } ) =>{
                 <View style={styles.search_button_container}>
                     <Image source={Images.search} style={styles.search_icon}/>
                     <TextInput placeholderTextColor= {Colors.placeholder_text_clr} 
-                        placeholder="Search" style={styles.textInput}/>
+                        placeholder="Search" style={styles.textInput} onChangeText={handleSearch}
+                        value={searchQuery}/>
                 </View>
                 <ScrollView style={styles.scrollView}>
                     <FlatList
-                        data={categoriesData.slice(0, 6).map(item => ({ ...item }))}
+                        data={filteredData.slice(0, 6)}
                         renderItem={({ item }) => renderItem({ item, navigation })}
                         keyExtractor={(item, index) => index.toString()}
                     />

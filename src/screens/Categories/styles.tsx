@@ -1,11 +1,11 @@
 import { StyleSheet , Platform } from "react-native";
 import {Colors} from '../../theme/colors';
+import { Fonts } from "../../Constants";
 
 export const styles = StyleSheet.create({
 
     header_container: {
         flexDirection: 'row',
-        marginTop: Platform.OS === 'ios' ? 20 : 0,
         backgroundColor: Colors.white_clr,
         padding: 10,
         alignItems: 'center',
@@ -32,6 +32,8 @@ export const styles = StyleSheet.create({
       
       logo_icon: {
         alignSelf: 'center',
+        height:33,
+        width:80
     },
 
     category_text_container: {
@@ -77,9 +79,11 @@ export const styles = StyleSheet.create({
 
     textInput: {
         fontSize:12,
-        padding:0,
         alignSelf:'center',
-        marginLeft:10
+        marginLeft:10,
+        flex:1,
+        padding:0,
+        color:Colors.blue_text_clr,
     },
 
     itemContainer:{
@@ -87,13 +91,13 @@ export const styles = StyleSheet.create({
         padding: 12,
         marginVertical: 5,
         borderRadius: 10,
-        borderWidth:0.3,
+        borderWidth:1,
         borderColor:Colors.primary_clr,
         backgroundColor:Colors.white_clr,
         alignItems:'center',
         width:'90%',
         alignSelf:'center',
-        height:80,
+        height:90,
     },
 
     list_image_container:{
@@ -113,7 +117,7 @@ export const styles = StyleSheet.create({
         shadowRadius: 2,
         elevation: 3,
         height:55,
-        width:'18%',
+        width:55,
         flexDirection:'column',
         marginBottom:5
     },
@@ -128,9 +132,10 @@ export const styles = StyleSheet.create({
     category_name:{
         marginBottom:5,
         color:Colors.primary_clr,
-        fontWeight:'500',
         marginLeft:15,
-        marginRight:'auto'
+        marginRight:'auto',
+        fontFamily:Fonts.LEXEND_DECA_MEDIUM,
+        fontSize:14
     },
 
     list_icon: {

@@ -3,6 +3,9 @@ import {Colors} from '../../theme/colors';
 import { Fonts } from "../../Constants";
 
 export const styles = StyleSheet.create({
+        contentContainer: {
+            marginBottom:60
+        },
        
         separator: {
             borderBottomWidth: 1,
@@ -20,7 +23,9 @@ export const styles = StyleSheet.create({
 
         logo_icon:{
             color:Colors.gray_clr,
-            verticalAlign:'middle', 
+            verticalAlign:'middle',
+            height:33,
+            width:80
         },
 
         category_name:{
@@ -32,7 +37,6 @@ export const styles = StyleSheet.create({
         
         header_container: {
             flexDirection: 'row',
-            marginTop: Platform.OS === 'ios' ? 20 : 0,
             justifyContent: 'center',
             backgroundColor: Colors.white_clr,
             padding: 10,
@@ -40,13 +44,14 @@ export const styles = StyleSheet.create({
 
         itemContainer: {
             padding: 10,
-            marginVertical: 7,
+            marginVertical: 10,
             backgroundColor:Colors.white_clr,
             borderRadius: 10,
             justifyContent:'center',
+            alignItems:'center',
+            alignSelf:'center',
             borderWidth:0.7,
             borderColor:Colors.primary_clr,
-            alignItems:'center',
             width:'37%',
             height:130,
             shadowColor: '#000',
@@ -57,7 +62,7 @@ export const styles = StyleSheet.create({
             shadowOpacity: 0.22,
             shadowRadius: 2.22,
             elevation: 3,
-            marginLeft:32,
+            marginLeft:0,
         },
         
         button_text:{
@@ -118,8 +123,8 @@ export const styles = StyleSheet.create({
             shadowOpacity: 0.15,
             shadowRadius: 2,
             elevation: 3,
-            height:50,
-            width:'45%',
+            height:55,
+            width:55,
             flexDirection:'column',
             marginBottom:5
         },

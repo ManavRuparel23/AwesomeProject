@@ -9,6 +9,7 @@ import { Colors } from "../../theme/colors";
 
 const ServiceProviderFilterPopup = ({ navigation , onClose , onApplyFilter , selectedStatus }) => {
     const [selectedFilter, setSelectedFilter] = useState(selectedStatus);
+    const [selectedParishes, setSelectedParishes] = useState([]);
     const data = [
         { label: 'Open', value: 'Open' },
         { label: 'Close', value: 'Close' },
@@ -17,10 +18,12 @@ const ServiceProviderFilterPopup = ({ navigation , onClose , onApplyFilter , sel
     const isFocusRef = useRef(false);
 
     const applyFilter = () => {
-        onApplyFilter(selectedFilter);
+        console.log(selectedParishes)
+        onApplyFilter(selectedFilter, selectedParishes);
     };
     const clearFilter = () => {
         setSelectedFilter(null);
+        setSelectedParishes([]);
         onApplyFilter(null);
     };
     return (
@@ -48,7 +51,7 @@ const ServiceProviderFilterPopup = ({ navigation , onClose , onApplyFilter , sel
                         onChange={item => setSelectedFilter(item.value)}
                     />
                 </View>
-                <MultiSelectComponent/>
+                <MultiSelectComponent onSelectedItemsChange={setSelectedParishes}/>
                 <View style={styles.button_container}>
                     <TouchableOpacity style={styles.clear_button_container} onPress={() => { clearFilter(); onClose();}}>
                         <Text style={{color:Colors.white_clr, alignSelf:'center'}}>{Strings.filter_clear_button}</Text>

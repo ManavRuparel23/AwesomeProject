@@ -7,7 +7,6 @@ export const styles = StyleSheet.create({
 
     header_container:{
         flexDirection: 'row',
-        marginTop: Platform.OS === 'ios' ? 20 : 0,
         backgroundColor: Colors.white_clr,
         padding: 10,
     },
@@ -16,7 +15,7 @@ export const styles = StyleSheet.create({
         alignSelf:'center',
         backgroundColor:Colors.back_background_clr,
         height:28,
-        width:'7.7%',
+        width:'7%',
         justifyContent:'center',
         borderRadius:15,
     },
@@ -35,6 +34,8 @@ export const styles = StyleSheet.create({
     logo_icon:{
         alignItems: 'center',
         justifyContent: 'center',
+        height:33,
+        width:80
     },
 
     food_icon:{
@@ -44,8 +45,9 @@ export const styles = StyleSheet.create({
     },
 
     separator: {
-        borderBottomWidth: 0,
+        borderBottomWidth: 1,
         borderBottomColor: Colors.primary_clr,
+        marginBottom:10,
     },
 
     search_button_container:{
@@ -80,9 +82,11 @@ export const styles = StyleSheet.create({
 
     textInput: {
         fontSize:12,
-        padding:0,
         alignSelf:'center',
         marginLeft:10,
+        flex:1,
+        padding:0,
+        color:Colors.blue_text_clr,
     },
 
     filter_button_container:{
