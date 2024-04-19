@@ -1,0 +1,13 @@
+current directory: /Users/admin/Documents/Manav/StartCorp/AwesomeProject/vendor/bundle/ruby/3.0.0/gems/json-2.7.1/ext/json
+/Users/admin/.rbenv/versions/3.0.3/bin/ruby -I /Users/admin/.rbenv/versions/3.0.3/lib/ruby/3.0.0 -r ./siteconf20240418-22894-vipz9w.rb extconf.rb
+creating Makefile
+
+current directory: /Users/admin/Documents/Manav/StartCorp/AwesomeProject/vendor/bundle/ruby/3.0.0/gems/json-2.7.1/ext/json
+make DESTDIR\= clean
+
+current directory: /Users/admin/Documents/Manav/StartCorp/AwesomeProject/vendor/bundle/ruby/3.0.0/gems/json-2.7.1/ext/json
+make DESTDIR\=
+make: Nothing to be done for `all'.
+
+current directory: /Users/admin/Documents/Manav/StartCorp/AwesomeProject/vendor/bundle/ruby/3.0.0/gems/json-2.7.1/ext/json
+make DESTDIR\= install
