@@ -78,26 +78,33 @@ const MultiSelectComponent = ({onSelectedItemsChange, initialParishes}) => {
         value={selected}
         onChange={setSelected}
         renderItem={(item, index, isSelected) => (
-          <View style={styles.item}>
-            <View
-              style={[
-                styles.checkboxContainer,
-                {
-                  backgroundColor: selected.includes(item.id)
-                    ? Colors.primary_clr
-                    : Colors.white_clr,
-                },
-              ]}>
-              {selected.includes(item.id) ? (
-                <Image
-                  source={Images.checkboxselected}
-                  style={styles.checkboxIcon}
-                />
-              ) : (
-                <AntDesign name="checksquareo" size={20} color="transparent" />
-              )}
+          <View>
+            <View style={styles.item}>
+              <View
+                style={[
+                  styles.checkboxContainer,
+                  {
+                    backgroundColor: selected.includes(item.id)
+                      ? Colors.primary_clr
+                      : Colors.white_clr,
+                  },
+                ]}>
+                {selected.includes(item.id) ? (
+                  <Image
+                    source={Images.checkboxselected}
+                    style={styles.checkboxIcon}
+                  />
+                ) : (
+                  <AntDesign
+                    name="checksquareo"
+                    size={20}
+                    color="transparent"
+                  />
+                )}
+              </View>
+              <Text style={styles.label}>{item.location_name}</Text>
             </View>
-            <Text style={styles.label}>{item.location_name}</Text>
+            <View style={[styles.separator, {backgroundColor: '#DEDEDE'}]} />
           </View>
         )}
         selectedStyle={styles.selectedStyle}
@@ -131,16 +138,18 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.LEXEND_DECA_REGULAR,
     color: '#163959',
   },
+
   iconStyle: {
     width: 20,
     height: 20,
     marginHorizontal: 5,
   },
+
   item: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 10,
+    paddingVertical: 7,
+    paddingHorizontal: 7,
   },
 
   label: {
@@ -168,5 +177,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginTop: 7,
     marginBottom: 0,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#DEDEDE',
+    marginHorizontal: 0,
   },
 });

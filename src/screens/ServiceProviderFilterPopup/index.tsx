@@ -57,6 +57,7 @@ const ServiceProviderFilterPopup = ({
             <Image source={Images.cross} style={styles.cross_icon} />
           </TouchableOpacity>
         </View>
+        <View style={styles.lowerShadowEffect}></View>
         <View style={styles.container}>
           <Dropdown
             style={styles.dropdown}
@@ -77,6 +78,7 @@ const ServiceProviderFilterPopup = ({
           onSelectedItemsChange={setSelectedlocation}
           initialParishes={initialParishes}
         />
+        <View style={styles.upperShadowEffect}></View>
         <View style={styles.button_container}>
           <TouchableOpacity
             style={styles.clear_button_container}

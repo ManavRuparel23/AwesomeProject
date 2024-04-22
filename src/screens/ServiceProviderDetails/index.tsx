@@ -71,7 +71,7 @@ const renderItem = ({item, navigation, setItemData}) => {
   );
 };
 
-const ServiceProviderList = ({navigation, route}) => {
+const ServiceProviderDetails = ({navigation, route}) => {
   const {itemData, distanceData} = route.params;
   const [restaurantData, setRestaurantData] = useState([]);
   const [currentItemData, setCurrentItemData] = useState(itemData);
@@ -144,6 +144,22 @@ const ServiceProviderList = ({navigation, route}) => {
     return null;
   };
 
+  const openMap = () => {
+    const {latitude, longitude} = currentItemData;
+    const url = Platform.select({
+      ios: `maps://app?daddr=${latitude},${longitude}&dirflg=d`,
+      android: `google.navigation:q=${latitude},${longitude}`,
+    });
+
+    Linking.canOpenURL(url).then(supported => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        Alert.alert('Error', 'Could not open map application.');
+      }
+    });
+  };
+
   return (
     <BackgroundImage
       backgroundImage={Images.background}
@@ -177,7 +193,9 @@ const ServiceProviderList = ({navigation, route}) => {
               </View>
             </View>
           </View>
-          <View style={[styles.detail_fields_container, {marginRight: 18}]}>
+          <TouchableOpacity
+            style={[styles.detail_fields_container, {marginRight: 18}]}
+            onPress={openMap}>
             <View style={styles.detail_fields_icon_container}>
               <Image
                 source={Images.location}
@@ -187,7 +205,7 @@ const ServiceProviderList = ({navigation, route}) => {
             <Text style={styles.detail_fields_text}>
               {currentItemData.address}
             </Text>
-          </View>
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.detail_fields_container}
             onPress={() => {
@@ -257,4 +275,4 @@ const ServiceProviderList = ({navigation, route}) => {
   );
 };
 
-export default ServiceProviderList;
+export default ServiceProviderDetails;
