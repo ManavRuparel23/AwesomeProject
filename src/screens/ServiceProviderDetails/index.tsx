@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -17,22 +17,55 @@ import BackgroundImage from '../../Components/BackgroundImage';
 import {Colors} from '../../theme/colors';
 import {styles} from './styles';
 
-const renderItem = ({item, navigation, setItemData}) => {
-  const statusTextColor = item.status === 'Open Now' ? Colors.green_clr : 'red';
-  const formatPhoneNumber = phoneNumber => {
+interface Item {
+  id: string;
+  name?: string;
+  address?: string;
+  mobile?: string;
+  location_name?: string;
+  status?: string;
+  image?: string;
+  mail?: string;
+  website?: string;
+  latitude?: number;
+  longitude?: number;
+}
+
+interface Props {
+  navigation: any;
+  route: {
+    params: {
+      itemData: Item;
+      distanceData: any;
+    };
+  };
+}
+
+const renderItem = ({
+  item,
+  navigation,
+  setItemData,
+}: {
+  item: Item;
+  navigation: any;
+  setItemData: (item: Item) => void;
+}) => {
+  const handleItemPress = () => {
+    setItemData(item);
+  };
+  const formatPhoneNumber = (phoneNumber?: string) => {
+    if (!phoneNumber) return '';
     const cleaned = ('' + phoneNumber).replace(/\D/g, '');
     const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
     if (match) {
       return '(' + match[1] + ') ' + match[2] + '-' + match[3];
     }
-    return null;
+    return phoneNumber;
   };
   const statusColor =
     item.status === 'Open' ? Colors.green_clr : Colors.red_clr;
   return (
-    <TouchableOpacity
-      style={styles.listcontainer}
-      onPress={() => setItemData(item)}>
+    <TouchableOpacity style={styles.listcontainer} onPress={handleItemPress}>
       <View style={styles.opera_icon_list_container}>
         <Image source={{uri: item.image}} style={styles.item_list_icon} />
       </View>
@@ -71,44 +104,118 @@ const renderItem = ({item, navigation, setItemData}) => {
   );
 };
 
-const ServiceProviderDetails = ({navigation, route}) => {
+const ServiceProviderDetails: React.FC<Props> = ({navigation, route}) => {
   const {itemData, distanceData} = route.params;
-  const [restaurantData, setRestaurantData] = useState([]);
-  const [currentItemData, setCurrentItemData] = useState(itemData);
+  const [restaurantData, setRestaurantData] = useState<Item[]>([]);
+  const [currentItemData, setCurrentItemData] = useState<Item>(itemData);
 
-  useEffect(() => {
-    const fetchRestaurantData = async () => {
-      try {
-        const categorySnapshot = await firestore()
-          .collection('categories')
-          .where('name', '==', 'Food')
-          .get();
-        const data = [];
-        if (categorySnapshot) {
-          for (const doc of categorySnapshot.docs) {
-            const restaurantDataSnapshot = await firestore()
-              .collection('categories')
-              .doc(doc.id)
-              .collection('RestaurantsData')
-              .get();
-            const restaurantData = restaurantDataSnapshot.docs.map(
-              document => ({
-                id: document.id,
-                ...document.data(),
-              }),
-            );
-            data.push(...restaurantData);
-          }
-          const filteredData = data.filter(item => item.id !== itemData.id);
-          setRestaurantData(filteredData);
+  // useEffect(() => {
+  //   const fetchRestaurantData = async () => {
+  //     try {
+  //       const categorySnapshot = await firestore()
+  //         .collection('categories')
+  //         .where('name', '==', 'Food')
+  //         .get();
+  //       const data: Item[] = [];
+  //       if (categorySnapshot) {
+  //         for (const doc of categorySnapshot.docs) {
+  //           const restaurantDataSnapshot = await firestore()
+  //             .collection('categories')
+  //             .doc(doc.id)
+  //             .collection('RestaurantsData')
+  //             .get();
+  //           const restaurantData = restaurantDataSnapshot.docs.map(
+  //             document => ({
+  //               id: document.id,
+  //               ...document.data(),
+  //             }),
+  //           );
+  //           data.push(...restaurantData);
+  //         }
+  //         const filteredData = data.filter(item => item.id !== itemData.id);
+  //         setRestaurantData(filteredData);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching restaurant data: ', error);
+  //     }
+  //   };
+  //   fetchRestaurantData();
+  // }, []);
+
+  // const handleItemClick = async (selectedItem: Item) => {
+  //   const categorySnapshot = await firestore()
+  //     .collection('categories')
+  //     .where('name', '==', 'Food')
+  //     .get();
+  //   const data: Item[] = [];
+  //   if (categorySnapshot) {
+  //     for (const doc of categorySnapshot.docs) {
+  //       const restaurantDataSnapshot = await firestore()
+  //         .collection('categories')
+  //         .doc(doc.id)
+  //         .collection('RestaurantsData')
+  //         .get();
+  //       const restaurantData = restaurantDataSnapshot.docs.map(document => ({
+  //         id: document.id,
+  //         ...document.data(),
+  //       }));
+  //       data.push(...restaurantData);
+  //     }
+  //     setCurrentItemData(selectedItem);
+  //     const filteredData = data.filter(item => item.id !== selectedItem.id);
+  //     setRestaurantData(filteredData);
+  //   }
+  // };
+
+  const fetchRestaurantData = async (categoryName: string) => {
+    try {
+      const categorySnapshot = await firestore()
+        .collection('categories')
+        .where('name', '==', categoryName)
+        .get();
+      const data: Item[] = [];
+      if (categorySnapshot) {
+        for (const doc of categorySnapshot.docs) {
+          const restaurantDataSnapshot = await firestore()
+            .collection('categories')
+            .doc(doc.id)
+            .collection('RestaurantsData')
+            .get();
+          const restaurantData = restaurantDataSnapshot.docs.map(document => ({
+            id: document.id,
+            ...document.data(),
+          }));
+          data.push(...restaurantData);
         }
-      } catch (error) {
-        console.error('Error fetching restaurant data: ', error);
+        return data;
       }
-    };
-    fetchRestaurantData();
-  }, []);
+    } catch (error) {
+      console.error('Error fetching restaurant data: ', error);
+    }
+  };
 
+  const handleItemClick = async (selectedItem: Item) => {
+    const categoryName = 'Food';
+    const restaurantData = await fetchRestaurantData(categoryName);
+    if (restaurantData) {
+      setCurrentItemData(selectedItem);
+      const filteredData = restaurantData.filter(
+        item => item.id !== selectedItem.id,
+      );
+      setRestaurantData(filteredData);
+    }
+  };
+
+  // useEffect for initial data fetching
+  useEffect(() => {
+    const categoryName = 'Food'; // Change category name as needed
+    fetchRestaurantData(categoryName).then(data => {
+      if (data) {
+        const filteredData = data.filter(item => item.id !== itemData.id);
+        setRestaurantData(filteredData);
+      }
+    });
+  }, []);
   const statusColor =
     currentItemData.status === 'Open'
       ? Colors.status_open_clr
@@ -132,32 +239,45 @@ const ServiceProviderDetails = ({navigation, route}) => {
     Linking.openURL(emailURL);
   };
 
-  const openURL = async url => {
-    await Linking.openURL(`https://${url}`);
+  const openURL = async (url: string) => {
+    if (url) {
+      await Linking.openURL(`https://${url}`);
+    } else {
+      Alert.alert('Error', 'Invalid URL.');
+    }
   };
-  const formatPhoneNumber = phoneNumber => {
+
+  const formatPhoneNumber = (phoneNumber?: string) => {
+    if (!phoneNumber) return ''; // Return an empty string or handle it as per your requirement
     const cleaned = ('' + phoneNumber).replace(/\D/g, '');
     const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
     if (match) {
       return '(' + match[1] + ') ' + match[2] + '-' + match[3];
     }
-    return null;
+    return phoneNumber; // Return the original value if it doesn't match the expected format
   };
 
   const openMap = () => {
     const {latitude, longitude} = currentItemData;
-    const url = Platform.select({
-      ios: `maps://app?daddr=${latitude},${longitude}&dirflg=d`,
-      android: `google.navigation:q=${latitude},${longitude}`,
-    });
+    let url: string | undefined;
+    if (latitude && longitude) {
+      url = Platform.select({
+        ios: `maps://app?daddr=${latitude},${longitude}&dirflg=d`,
+        android: `google.navigation:q=${latitude},${longitude}`,
+      });
+    }
 
-    Linking.canOpenURL(url).then(supported => {
-      if (supported) {
-        Linking.openURL(url);
-      } else {
-        Alert.alert('Error', 'Could not open map application.');
-      }
-    });
+    if (url) {
+      Linking.canOpenURL(url).then(supported => {
+        if (supported) {
+          Linking.openURL(url!); // Use the non-null assertion operator (!) to ensure url is not undefined
+        } else {
+          Alert.alert('Error', 'Could not open map application.');
+        }
+      });
+    } else {
+      Alert.alert('Error', 'Invalid coordinates.');
+    }
   };
 
   return (
@@ -265,7 +385,7 @@ const ServiceProviderDetails = ({navigation, route}) => {
           <FlatList
             data={restaurantData}
             renderItem={({item}) =>
-              renderItem({item, navigation, setItemData: setCurrentItemData})
+              renderItem({item, navigation, setItemData: handleItemClick})
             }
             keyExtractor={(item, index) => index.toString()}
           />

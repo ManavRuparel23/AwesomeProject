@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   Image,
   Modal,
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import ServiceProviderFilterPopup from './../ServiceProviderFilterPopup';
@@ -16,16 +18,38 @@ import {Colors} from '../../theme/colors';
 import {Images} from '../../theme/images';
 import BackgroundImage from '../../Components/BackgroundImage';
 
-const renderItem = ({item, navigation}) => {
+interface RestaurantItem {
+  id: string;
+  name?: string;
+  address?: string;
+  mobile?: string;
+  location_name?: string;
+  status?: string;
+  image?: string;
+}
+
+interface Props {
+  navigation: any; // Update the type as per your navigation setup
+}
+
+const renderItem = ({
+  item,
+  navigation,
+}: {
+  item: RestaurantItem;
+  navigation: any; // Update the type as per your navigation setup
+}) => {
   const statusColor =
     item.status === 'Open' ? Colors.green_clr : Colors.red_clr;
-  const formatPhoneNumber = phoneNumber => {
+
+  const formatPhoneNumber = (phoneNumber?: string) => {
+    if (!phoneNumber) return ''; // Return an empty string or handle it as per your requirement
     const cleaned = ('' + phoneNumber).replace(/\D/g, '');
     const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
     if (match) {
       return '(' + match[1] + ') ' + match[2] + '-' + match[3];
     }
-    return null;
+    return phoneNumber; // Return the original value if it doesn't match the expected format
   };
 
   return (
@@ -72,17 +96,17 @@ const renderItem = ({item, navigation}) => {
   );
 };
 
-const ServiceProviderList = ({navigation}) => {
-  const [restaurantData, setRestaurantData] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState(null);
-  const [selectedParishes, setSelectedParishes] = useState([]);
-  const [isSearchClear, setIsSearchClear] = useState();
-  const [currentLocation, setCurrentLocation] = useState(null);
-  const [isPopupVisible, setPopupVisible] = useState(false);
-  const [filteredData, setFilteredData] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+const ServiceProviderList: React.FC<Props> = ({navigation}) => {
+  const [restaurantData, setRestaurantData] = useState<RestaurantItem[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  const [selectedParishes, setSelectedParishes] = useState<string[]>([]);
+  const [isSearchClear, setIsSearchClear] = useState<boolean>(false);
+  const [currentLocation, setCurrentLocation] = useState<any>(null); // Update type as per your needs
+  const [isPopupVisible, setPopupVisible] = useState<boolean>(false);
+  const [filteredData, setFilteredData] = useState<RestaurantItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const searchInputRef = useRef(null);
+  const searchInputRef = useRef<TextInput>(null);
 
   useEffect(() => {
     const fetchRestaurantData = async () => {
@@ -92,7 +116,7 @@ const ServiceProviderList = ({navigation}) => {
           .where('name', '==', 'Food')
           .get();
 
-        const data = [];
+        const data: RestaurantItem[] = [];
 
         if (categorySnapshot) {
           for (const doc of categorySnapshot.docs) {
@@ -103,7 +127,10 @@ const ServiceProviderList = ({navigation}) => {
               .get();
 
             const restaurantData = restaurantDataSnapshot.docs.map(
-              document => ({id: document.id, ...document.data()}),
+              document => ({
+                id: document.id,
+                ...document.data(),
+              }),
             );
             data.push(...restaurantData);
           }
@@ -125,13 +152,13 @@ const ServiceProviderList = ({navigation}) => {
         }
         if (
           selectedParishes.length > 0 &&
-          !selectedParishes.includes(item.location_name)
+          !selectedParishes.includes(item.location_name || '')
         ) {
           return false;
         }
         if (
           searchQuery &&
-          !item.name.toLowerCase().includes(searchQuery.toLowerCase())
+          !(item.name ?? '').toLowerCase().includes(searchQuery.toLowerCase())
         ) {
           return false;
         }
@@ -143,8 +170,11 @@ const ServiceProviderList = ({navigation}) => {
     filterData();
   }, [selectedStatus, selectedParishes, searchQuery]);
 
-  const applyFilter = (status, parishes, isSearchClear) => {
-    console.log('asdasd = ', isSearchClear);
+  const applyFilter = (
+    status: string | null,
+    parishes: string[],
+    isSearchClear: boolean,
+  ) => {
     setSelectedStatus(status);
     setSelectedParishes(parishes);
     if (!isSearchClear && searchInputRef.current) {
@@ -171,7 +201,12 @@ const ServiceProviderList = ({navigation}) => {
       backgroundImage={Images.background}
       headerContent={headerContent}>
       <View style={styles.separator} />
-      <View style={{flexDirection: 'row', alignSelf: 'center', marginLeft: 5}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignSelf: 'center',
+          marginLeft: 5,
+        }}>
         <View style={styles.search_button_container}>
           <Image source={Images.search} style={styles.search_icon} />
           <TextInput

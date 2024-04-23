@@ -47,7 +47,7 @@ export const styles = StyleSheet.create({
   },
 
   dropdown: {
-    height: 40,
+    height: Platform.OS === 'android' ? 65 : 40,
     backgroundColor: 'transparent',
   },
   icon: {

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Image} from 'react-native';
+import {StyleSheet, View, Text, Image, ImageSourcePropType} from 'react-native';
 import {MultiSelect} from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import firestore from '@react-native-firebase/firestore';
@@ -7,9 +7,22 @@ import {Fonts} from '../Constants';
 import {Colors} from '../theme/colors';
 import {Images} from '../theme/images';
 
-const MultiSelectComponent = ({onSelectedItemsChange, initialParishes}) => {
-  const [selected, setSelected] = useState([]);
-  const [restaurantData, setRestaurantData] = useState([]);
+interface LocationData {
+  id: string;
+  location_name: string;
+}
+
+interface MultiSelectComponentProps {
+  onSelectedItemsChange: (selectedItems: string[]) => void;
+  initialParishes: string[];
+}
+
+const MultiSelectComponent: React.FC<MultiSelectComponentProps> = ({
+  onSelectedItemsChange,
+  initialParishes,
+}) => {
+  const [selected, setSelected] = useState<string[]>([]);
+  const [restaurantData, setRestaurantData] = useState<LocationData[]>([]);
 
   useEffect(() => {
     const fetchRestaurantData = async () => {
@@ -19,7 +32,7 @@ const MultiSelectComponent = ({onSelectedItemsChange, initialParishes}) => {
           .where('name', '==', 'Food')
           .get();
 
-        const uniqueLocations = new Set();
+        const uniqueLocations = new Set<string>();
 
         if (categorySnapshot) {
           for (const doc of categorySnapshot.docs) {
@@ -35,7 +48,7 @@ const MultiSelectComponent = ({onSelectedItemsChange, initialParishes}) => {
             });
           }
 
-          const data = Array.from(uniqueLocations).map(
+          const data: LocationData[] = Array.from(uniqueLocations).map(
             (location_name, index) => ({
               id: index.toString(),
               location_name,
@@ -60,7 +73,7 @@ const MultiSelectComponent = ({onSelectedItemsChange, initialParishes}) => {
 
   useEffect(() => {
     onSelectedItemsChange(
-      selected.map(index => restaurantData[index]?.location_name),
+      selected.map(index => restaurantData[index]?.location_name || ''),
     );
   }, [selected, onSelectedItemsChange, restaurantData]);
 

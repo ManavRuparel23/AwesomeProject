@@ -1,43 +1,47 @@
-import {
-  Button,
-  Text,
-  TextInput,
-  View,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
-import {styles} from './styles';
+import React, {useState} from 'react';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
 import {Strings} from '../../theme/strings';
 import {Images} from '../../theme/images';
 import MultiSelectComponent from '../../Components/MultiSelectDropdown';
 import {Colors} from '../../theme/colors';
+import {styles} from './styles';
 
-const ServiceProviderFilterPopup = ({
+interface Props {
+  navigation: any;
+  onClose: () => void;
+  onApplyFilter: (
+    status: string | null,
+    parishes: string[],
+    apply: boolean,
+  ) => void;
+  initialStatus: string | null;
+  initialParishes: string[];
+}
+
+const ServiceProviderFilterPopup: React.FC<Props> = ({
   navigation,
   onClose,
   onApplyFilter,
   initialStatus,
   initialParishes,
 }) => {
-  const [selectedStatus, setSelectedStatus] = useState(
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(
     initialStatus ? initialStatus : null,
   );
-  const [selectedlocation, setSelectedlocation] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
+
   const data = [
     {label: 'Open', value: 'Open'},
     {label: 'Close', value: 'Close'},
   ];
 
   const clearSelectedParishes = () => {
-    setSelectedlocation([]);
+    setSelectedLocation([]);
   };
 
-  const isFocusRef = useRef(false);
-
   const applyFilter = () => {
-    onApplyFilter(selectedStatus, selectedlocation, true);
+    onApplyFilter(selectedStatus, selectedLocation, true);
   };
 
   const clearFilter = () => {
@@ -69,13 +73,11 @@ const ServiceProviderFilterPopup = ({
             labelField="label"
             valueField="value"
             placeholder="Select Status"
-            onFocus={() => (isFocusRef.current = true)}
-            onBlur={() => (isFocusRef.current = false)}
-            onChange={item => setSelectedStatus(item.value)}
+            onChange={(item: any) => setSelectedStatus(item.value)}
           />
         </View>
         <MultiSelectComponent
-          onSelectedItemsChange={setSelectedlocation}
+          onSelectedItemsChange={setSelectedLocation}
           initialParishes={initialParishes}
         />
         <View style={styles.upperShadowEffect}></View>

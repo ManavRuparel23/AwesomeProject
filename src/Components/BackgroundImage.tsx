@@ -1,12 +1,28 @@
-import React from 'react';
-import { ImageBackground, SafeAreaView, StyleSheet, View } from 'react-native';
+import React, {ReactNode} from 'react';
+import {
+  ImageBackground,
+  SafeAreaView,
+  StyleSheet,
+  View,
+  ImageSourcePropType,
+} from 'react-native';
 
-const BackgroundImage = ({ children, backgroundImage, headerContent }) => {
+interface BackgroundImageProps {
+  children: ReactNode;
+  backgroundImage: ImageSourcePropType;
+  headerContent?: ReactNode;
+}
+
+const BackgroundImage: React.FC<BackgroundImageProps> = ({
+  children,
+  backgroundImage,
+  headerContent,
+}) => {
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.headerContainer}>
-        {headerContent}
-      </View>
+      {headerContent && (
+        <View style={styles.headerContainer}>{headerContent}</View>
+      )}
       <View style={styles.contentContainer}>
         <ImageBackground source={backgroundImage} style={styles.background}>
           <View style={styles.content}>{children}</View>
@@ -21,17 +37,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerContainer: {
+    // Add styles for header container if needed
   },
   contentContainer: {
     flex: 1,
   },
   background: {
     flex: 1,
-    resizeMode: 'cover', // or 'stretch' or any other Image style property
+    resizeMode: 'cover',
   },
   content: {
     flex: 1,
-    padding:0, // adjust this based on your layout
+    padding: 0,
   },
 });
 
