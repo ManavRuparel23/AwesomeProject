@@ -1,16 +1,17 @@
 import React, {ReactNode} from 'react';
 import {
   ImageBackground,
-  SafeAreaView,
   StyleSheet,
   View,
   ImageSourcePropType,
 } from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 interface BackgroundImageProps {
   children: ReactNode;
   backgroundImage: ImageSourcePropType;
   headerContent?: ReactNode;
+  backgroundColor?: string;
 }
 
 const BackgroundImage: React.FC<BackgroundImageProps> = ({
@@ -36,9 +37,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  headerContainer: {
-    // Add styles for header container if needed
-  },
+  headerContainer: {},
   contentContainer: {
     flex: 1,
   },

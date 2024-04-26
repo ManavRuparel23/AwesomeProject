@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Image, ImageSourcePropType} from 'react-native';
+import {StyleSheet, View, Text, Image} from 'react-native';
 import {MultiSelect} from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import firestore from '@react-native-firebase/firestore';
@@ -43,7 +43,7 @@ const MultiSelectComponent: React.FC<MultiSelectComponentProps> = ({
               .get();
 
             restaurantDataSnapshot.forEach(document => {
-              const {location_name} = document.data();
+              const { location_name } = document.data();
               uniqueLocations.add(location_name);
             });
           }
@@ -62,20 +62,23 @@ const MultiSelectComponent: React.FC<MultiSelectComponentProps> = ({
               .filter(item => initialParishes.includes(item.location_name))
               .map(item => item.id);
             setSelected(initialSelections);
+            onSelectedItemsChange(initialParishes); // Notify parent of initial selection
           }
         }
       } catch (error) {
         console.error('Error fetching restaurant data: ', error);
       }
     };
+
     fetchRestaurantData();
-  }, [initialParishes]);
+  }, [initialParishes, onSelectedItemsChange]);
 
   useEffect(() => {
     onSelectedItemsChange(
       selected.map(index => restaurantData[index]?.location_name || ''),
     );
   }, [selected, onSelectedItemsChange, restaurantData]);
+
 
   return (
     <View style={styles.container}>
@@ -133,7 +136,7 @@ const styles = StyleSheet.create({
   dropdown: {
     height: 40,
     backgroundColor: 'transparent',
-    borderColor: '#DDDDDD',
+    borderColor: Colors.dropdown_border_clr,
     borderWidth: 1,
     borderRadius: 6,
     justifyContent: 'center',
@@ -143,13 +146,13 @@ const styles = StyleSheet.create({
   placeholderStyle: {
     fontSize: 12,
     fontFamily: Fonts.LEXEND_DECA_REGULAR,
-    color: '#0000004D',
+    color: Colors.placeholder_text_clr,
     marginHorizontal: 5,
   },
   selectedTextStyle: {
     fontSize: 12,
     fontFamily: Fonts.LEXEND_DECA_REGULAR,
-    color: '#163959',
+    color: Colors.blue_text_clr,
   },
 
   iconStyle: {
@@ -168,7 +171,7 @@ const styles = StyleSheet.create({
   label: {
     marginLeft: 7,
     fontSize: 12,
-    color: '#163959',
+    color: Colors.blue_text_clr,
     fontFamily: Fonts.LEXEND_DECA_LIGHT,
   },
 
@@ -193,7 +196,7 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: '#DEDEDE',
+    backgroundColor: Colors.seperator_color,
     marginHorizontal: 0,
   },
 });

@@ -11,7 +11,9 @@ import {styles} from './styles';
 import {Images} from '../../theme/images';
 import {Strings} from '../../theme/strings';
 import BackgroundImage from '../../Components/BackgroundImage';
+import {fetchCategoriesData} from '../../utils/firebase';
 import firestore from '@react-native-firebase/firestore';
+import ImageLoad from 'react-native-image-placeholder';
 
 interface Item {
   id: string;
@@ -24,20 +26,67 @@ interface Props {
 }
 
 const renderItem = ({item, navigation}: {item: Item; navigation: any}) => {
+  // if (item.name === 'Food') {
+  //   return (
+  //     <TouchableOpacity
+  //       style={styles.itemContainer}
+  //       onPress={() =>
+  //         navigation.navigate('ServiceProviderList', {itemData: item})
+  //       }>
+  //       <View style={styles.list_image_container}>
+  //         {/* <Image
+  //           source={{uri: item.image ? item.image : Images.placeholder}}
+  //           style={styles.category_icon}
+  //         /> */}
+  //         <ImageLoad
+  //           style={styles.category_icon}
+  //           loadingStyle={styles.category_icon}
+  //           source={{
+  //             uri: item.image,
+  //           }}
+  //         />
+  //       </View>
+  //       <Text style={styles.category_name}>{item.name}</Text>
+  //     </TouchableOpacity>
+  //   );
+  // } else {
   return (
     <TouchableOpacity
       style={styles.itemContainer}
-      onPress={() => navigation.navigate('ServiceProviderList')}>
+      onPress={() =>
+        navigation.navigate('ServiceProviderList', {itemData: item})
+      }>
       <View style={styles.list_image_container}>
-        <Image source={{uri: item.image}} style={styles.category_icon} />
+        {/* <Image source={{uri: item.image}} style={styles.category_icon} /> */}
+        <ImageLoad
+          style={styles.category_icon}
+          loadingStyle={styles.category_icon}
+          source={{
+            uri: item.image,
+          }}
+        />
       </View>
       <Text style={styles.category_name}>{item.name}</Text>
     </TouchableOpacity>
   );
+  // }
 };
 
 const Home: React.FC<Props> = ({navigation}) => {
   const [categoriesData, setCategoriesData] = useState<Item[]>([]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const data = await fetchCategoriesData();
+  //       console.log('categories Data:', data);
+  //       setCategoriesData(data);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   useEffect(() => {
     const fetchCategoriesData = async () => {
@@ -47,7 +96,6 @@ const Home: React.FC<Props> = ({navigation}) => {
           id: doc.id,
           ...doc.data(),
         }));
-        console.log('categories Data:', data);
         setCategoriesData(data);
       } catch (error) {
         console.error('Error fetching categories data: ', error);

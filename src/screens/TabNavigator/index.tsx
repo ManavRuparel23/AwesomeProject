@@ -16,7 +16,7 @@
 //   return (
 //     <GestureHandlerRootView style={{ flex: 1 }}> {/* Wrap entire navigation structure */}
 //       <NavigationContainer>
-//         <Tab.Navigator 
+//         <Tab.Navigator
 //           tabBarOptions={{
 //             labelStyle: {
 //               color: Colors.primary_clr,
@@ -25,7 +25,7 @@
 //             }
 //           }}
 //         >
-//           <Tab.Screen 
+//           <Tab.Screen
 //             name="Home"
 //             component={HomeScreen}
 //             options={{

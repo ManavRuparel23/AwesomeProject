@@ -10,12 +10,15 @@ import {
   Linking,
   Platform,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import {Images} from '../../theme/images';
 import BackgroundImage from '../../Components/BackgroundImage';
 import {Colors} from '../../theme/colors';
 import {styles} from './styles';
+import {fetchRestaurantData} from '../../utils/firebase';
+import ImageLoad from 'react-native-image-placeholder';
 
 interface Item {
   id: string;
@@ -26,9 +29,15 @@ interface Item {
   status?: string;
   image?: string;
   mail?: string;
-  website?: string;
+  website?: string | undefined;
   latitude?: number;
   longitude?: number;
+}
+
+interface RestaurantsData {
+  id: string;
+  name?: string;
+  image?: string;
 }
 
 interface Props {
@@ -36,7 +45,7 @@ interface Props {
   route: {
     params: {
       itemData: Item;
-      distanceData: any;
+      name: RestaurantsData;
     };
   };
 }
@@ -67,7 +76,17 @@ const renderItem = ({
   return (
     <TouchableOpacity style={styles.listcontainer} onPress={handleItemPress}>
       <View style={styles.opera_icon_list_container}>
-        <Image source={{uri: item.image}} style={styles.item_list_icon} />
+        {/* <Image
+          source={{uri: item.image ? item.image : Images.placeholder}}
+          style={styles.item_list_icon}
+        /> */}
+        <ImageLoad
+          style={styles.item_list_icon}
+          loadingStyle={styles.list_icon}
+          source={{
+            uri: item.image,
+          }}
+        />
       </View>
       <View style={styles.organization_list_container}>
         <Text style={styles.organization_list_text}>{item.name}</Text>
@@ -105,98 +124,63 @@ const renderItem = ({
 };
 
 const ServiceProviderDetails: React.FC<Props> = ({navigation, route}) => {
-  const {itemData, distanceData} = route.params;
+  const {itemData, name} = route.params;
   const [restaurantData, setRestaurantData] = useState<Item[]>([]);
   const [currentItemData, setCurrentItemData] = useState<Item>(itemData);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // useEffect(() => {
-  //   const fetchRestaurantData = async () => {
-  //     try {
-  //       const categorySnapshot = await firestore()
-  //         .collection('categories')
-  //         .where('name', '==', 'Food')
-  //         .get();
-  //       const data: Item[] = [];
-  //       if (categorySnapshot) {
-  //         for (const doc of categorySnapshot.docs) {
-  //           const restaurantDataSnapshot = await firestore()
-  //             .collection('categories')
-  //             .doc(doc.id)
-  //             .collection('RestaurantsData')
-  //             .get();
-  //           const restaurantData = restaurantDataSnapshot.docs.map(
-  //             document => ({
-  //               id: document.id,
-  //               ...document.data(),
-  //             }),
-  //           );
-  //           data.push(...restaurantData);
-  //         }
-  //         const filteredData = data.filter(item => item.id !== itemData.id);
-  //         setRestaurantData(filteredData);
+  //   useEffect(() => {
+  //     const fetchData = async () => {
+  //       try {
+  //         const data = await fetchRestaurantData(name.name ? name.name : '');
+  //         setRestaurantData(data);
+  //       } catch (error) {
+  //         console.error('Error fetching restaurant data:', error);
   //       }
-  //     } catch (error) {
-  //       console.error('Error fetching restaurant data: ', error);
-  //     }
-  //   };
-  //   fetchRestaurantData();
-  // }, []);
+  //     };
+  //     fetchData();
+  //   }, []);
 
-  // const handleItemClick = async (selectedItem: Item) => {
-  //   const categorySnapshot = await firestore()
-  //     .collection('categories')
-  //     .where('name', '==', 'Food')
-  //     .get();
-  //   const data: Item[] = [];
-  //   if (categorySnapshot) {
-  //     for (const doc of categorySnapshot.docs) {
-  //       const restaurantDataSnapshot = await firestore()
-  //         .collection('categories')
-  //         .doc(doc.id)
-  //         .collection('RestaurantsData')
-  //         .get();
-  //       const restaurantData = restaurantDataSnapshot.docs.map(document => ({
-  //         id: document.id,
-  //         ...document.data(),
-  //       }));
-  //       data.push(...restaurantData);
-  //     }
-  //     setCurrentItemData(selectedItem);
-  //     const filteredData = data.filter(item => item.id !== selectedItem.id);
-  //     setRestaurantData(filteredData);
-  //   }
-  // };
-
-  const fetchRestaurantData = async (categoryName: string) => {
-    try {
-      const categorySnapshot = await firestore()
-        .collection('categories')
-        .where('name', '==', categoryName)
-        .get();
-      const data: Item[] = [];
-      if (categorySnapshot) {
-        for (const doc of categorySnapshot.docs) {
-          const restaurantDataSnapshot = await firestore()
-            .collection('categories')
-            .doc(doc.id)
-            .collection('RestaurantsData')
-            .get();
-          const restaurantData = restaurantDataSnapshot.docs.map(document => ({
-            id: document.id,
-            ...document.data(),
-          }));
-          data.push(...restaurantData);
+  useEffect(() => {
+    const fetchRestaurantData = async () => {
+      try {
+        setIsLoading(true);
+        const categorySnapshot = await firestore()
+          .collection('categories')
+          .where('name', '==', 'Food')
+          .get();
+        const data: Item[] = [];
+        if (categorySnapshot) {
+          for (const doc of categorySnapshot.docs) {
+            const restaurantDataSnapshot = await firestore()
+              .collection('categories')
+              .doc(doc.id)
+              .collection('RestaurantsData')
+              .get();
+            const restaurantData = restaurantDataSnapshot.docs.map(
+              document => ({
+                id: document.id,
+                ...document.data(),
+              }),
+            );
+            data.push(...restaurantData);
+          }
+          const filteredData = data.filter(item => item.id !== itemData.id);
+          setRestaurantData(filteredData);
         }
-        return data;
+      } catch (error) {
+        console.error('Error fetching restaurant data: ', error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching restaurant data: ', error);
-    }
-  };
+    };
+    fetchRestaurantData();
+  }, []);
 
   const handleItemClick = async (selectedItem: Item) => {
-    const categoryName = 'Food';
-    const restaurantData = await fetchRestaurantData(categoryName);
+    const restaurantData = await fetchRestaurantData(
+      name.name ? name.name : '',
+    );
     if (restaurantData) {
       setCurrentItemData(selectedItem);
       const filteredData = restaurantData.filter(
@@ -206,10 +190,8 @@ const ServiceProviderDetails: React.FC<Props> = ({navigation, route}) => {
     }
   };
 
-  // useEffect for initial data fetching
   useEffect(() => {
-    const categoryName = 'Food'; // Change category name as needed
-    fetchRestaurantData(categoryName).then(data => {
+    fetchRestaurantData(name.name ? name.name : '').then(data => {
       if (data) {
         const filteredData = data.filter(item => item.id !== itemData.id);
         setRestaurantData(filteredData);
@@ -248,13 +230,13 @@ const ServiceProviderDetails: React.FC<Props> = ({navigation, route}) => {
   };
 
   const formatPhoneNumber = (phoneNumber?: string) => {
-    if (!phoneNumber) return ''; // Return an empty string or handle it as per your requirement
+    if (!phoneNumber) return '';
     const cleaned = ('' + phoneNumber).replace(/\D/g, '');
     const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
     if (match) {
       return '(' + match[1] + ') ' + match[2] + '-' + match[3];
     }
-    return phoneNumber; // Return the original value if it doesn't match the expected format
+    return phoneNumber;
   };
 
   const openMap = () => {
@@ -270,7 +252,7 @@ const ServiceProviderDetails: React.FC<Props> = ({navigation, route}) => {
     if (url) {
       Linking.canOpenURL(url).then(supported => {
         if (supported) {
-          Linking.openURL(url!); // Use the non-null assertion operator (!) to ensure url is not undefined
+          Linking.openURL(url!);
         } else {
           Alert.alert('Error', 'Could not open map application.');
         }
@@ -288,9 +270,13 @@ const ServiceProviderDetails: React.FC<Props> = ({navigation, route}) => {
       <ScrollView style={{marginBottom: 60}}>
         <View style={styles.details_container}>
           <View style={styles.main_container}>
-            <Image
+            {/* <Image
               source={{uri: currentItemData.image}}
               style={styles.main_icon}
+            /> */}
+            <ImageLoad
+              style={styles.main_icon}
+              source={{uri: currentItemData.image}}
             />
             <View style={styles.name_container}>
               <Text style={styles.name_text}>{currentItemData.name}</Text>
@@ -308,7 +294,7 @@ const ServiceProviderDetails: React.FC<Props> = ({navigation, route}) => {
                   <View style={styles.list_image_container}>
                     <Image source={Images.food} style={styles.list_icon} />
                   </View>
-                  <Text style={styles.category_name}>Food</Text>
+                  <Text style={styles.category_name}>{name.name}</Text>
                 </View>
               </View>
             </View>
@@ -382,13 +368,17 @@ const ServiceProviderDetails: React.FC<Props> = ({navigation, route}) => {
           <Text style={styles.nearby_text}>Other Nearby Providers</Text>
         </View>
         <View>
-          <FlatList
-            data={restaurantData}
-            renderItem={({item}) =>
-              renderItem({item, navigation, setItemData: handleItemClick})
-            }
-            keyExtractor={(item, index) => index.toString()}
-          />
+          {isLoading ? (
+            <ActivityIndicator size="large" color={Colors.primary_clr} />
+          ) : (
+            <FlatList
+              data={restaurantData}
+              renderItem={({item}) =>
+                renderItem({item, navigation, setItemData: handleItemClick})
+              }
+              keyExtractor={(item, index) => index.toString()}
+            />
+          )}
         </View>
       </ScrollView>
     </BackgroundImage>

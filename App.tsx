@@ -76,7 +76,7 @@ const TabNavigator = () => {
           height: 'auto',
         },
         tabBarIconStyle: {
-          marginTop: 15,
+          marginTop: Platform.OS === 'android' ? 15 : 22,
           marginBottom: 10,
         },
       }}>

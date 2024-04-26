@@ -6,6 +6,7 @@ import {Images} from '../../theme/images';
 import MultiSelectComponent from '../../Components/MultiSelectDropdown';
 import {Colors} from '../../theme/colors';
 import {styles} from './styles';
+import SingleSelectDropdown from '../../Components/SingleSelectDropdown';
 
 interface Props {
   navigation: any;
@@ -29,7 +30,9 @@ const ServiceProviderFilterPopup: React.FC<Props> = ({
   const [selectedStatus, setSelectedStatus] = useState<string | null>(
     initialStatus ? initialStatus : null,
   );
+  const [selectedItem, setSelectedItem] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const data = [
     {label: 'Open', value: 'Open'},
@@ -49,6 +52,20 @@ const ServiceProviderFilterPopup: React.FC<Props> = ({
     clearSelectedParishes();
     onApplyFilter(null, [], false);
   };
+
+  const handleSelectItem = value => {
+    setSelectedItem(value);
+  };
+  // useEffect(() => {
+  //   // Simulate an API call or async operation to fetch selected locations
+  //   // For demonstration purposes, use setTimeout to simulate loading
+  //   const timer = setTimeout(() => {
+  //     setLoading(false); // Set loading to false after loading is complete
+  //   }, 2000); // Adjust the time as needed
+
+  //   // Cleanup function
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   return (
     <View style={styles.main_container}>
@@ -75,6 +92,12 @@ const ServiceProviderFilterPopup: React.FC<Props> = ({
             placeholder="Select Status"
             onChange={(item: any) => setSelectedStatus(item.value)}
           />
+          {/* <SingleSelectDropdown
+              data={data}
+              selectedValue={selectedStatus}
+              onValueChange={setSelectedStatus}
+              placeholder="Select Status"
+            /> */}
         </View>
         <MultiSelectComponent
           onSelectedItemsChange={setSelectedLocation}

@@ -128,4 +128,8 @@ export const styles = StyleSheet.create({
     elevation: Platform.OS === 'android' ? 0.1 : 3,
     marginHorizontal: -20,
   },
+
+  loader: {
+    marginTop: 20,
+  },
 });

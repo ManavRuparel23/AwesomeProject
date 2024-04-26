@@ -1,12 +1,21 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TextInput, FlatList, ScrollView, Image} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  ScrollView,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
 import {Images} from '../../theme/images';
 import {Colors} from '../../theme/colors';
 import BackgroundImage from '../../Components/BackgroundImage';
 import {styles} from './styles';
+import {fetchCategoriesData} from '../../utils/firebase';
+import firestore from '@react-native-firebase/firestore';
+import ImageLoad from 'react-native-image-placeholder';
 
 interface Item {
   id: string;
@@ -20,30 +29,78 @@ interface Props {
 
 const renderItem = ({item, navigation}: {item: Item; navigation: any}) => {
   const navigateToServiceProviderList = () => {
-    navigation.navigate('ServiceProviderList');
+    navigation.navigate('ServiceProviderList', {itemData: item});
   };
-
+  // if (item.name === 'Food') {
+  //   return (
+  //     <TouchableOpacity
+  //       onPress={navigateToServiceProviderList}
+  //       style={styles.itemContainer}>
+  //       <View style={styles.list_image_container}>
+  //         {/* <Image
+  //           source={{uri: item.image ? item.image : Images.placeholder}}
+  //           style={styles.list_icon}
+  //         /> */}
+  //         <ImageLoad
+  //           style={styles.list_icon}
+  //           loadingStyle={styles.list_icon}
+  //           source={{
+  //             uri: item.image,
+  //           }}
+  //         />
+  //       </View>
+  //       <Text style={styles.category_name}>{item.name}</Text>
+  //       <Image source={Images.next} />
+  //     </TouchableOpacity>
+  //   );
+  // } else {
   return (
     <TouchableOpacity
-      onPress={navigateToServiceProviderList}
-      style={styles.itemContainer}>
+      style={styles.itemContainer}
+      onPress={navigateToServiceProviderList}>
       <View style={styles.list_image_container}>
-        <Image source={{uri: item.image}} style={styles.list_icon} />
+        {/* <Image
+            source={{uri: item.image ? item.image : Images.placeholder}}
+            style={styles.list_icon}
+          /> */}
+        <ImageLoad
+          style={styles.list_icon}
+          source={{
+            uri: item.image,
+          }}
+        />
       </View>
       <Text style={styles.category_name}>{item.name}</Text>
       <Image source={Images.next} />
     </TouchableOpacity>
   );
+  // }
 };
 
 const Categories: React.FC<Props> = ({navigation}) => {
   const [categoriesData, setCategoriesData] = useState<Item[]>([]);
   const [filteredData, setFilteredData] = useState<Item[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const data = await fetchCategoriesData();
+  //       console.log('categories Data:', data);
+  //       setCategoriesData(data);
+  //       setFilteredData(data);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   useEffect(() => {
     const fetchCategoriesData = async () => {
       try {
+        setIsLoading(true);
         const snapshot = await firestore().collection('categories').get();
         const data: Item[] = snapshot.docs.map(doc => ({
           id: doc.id,
@@ -53,6 +110,8 @@ const Categories: React.FC<Props> = ({navigation}) => {
         setFilteredData(data);
       } catch (error) {
         console.error('Error fetching categories data: ', error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchCategoriesData();
@@ -65,19 +124,6 @@ const Categories: React.FC<Props> = ({navigation}) => {
     );
     setFilteredData(filtered);
   };
-
-  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    storage()
-      .ref('Images/common.png')
-      .getDownloadURL()
-      .then(url => {
-        setImageUrl(url);
-        console.log('Url is :- ', url);
-      })
-      .catch(e => console.log('Errors while downloading => ', e));
-  }, []);
 
   const headerContent = (
     <View style={styles.header_container}>
@@ -109,11 +155,15 @@ const Categories: React.FC<Props> = ({navigation}) => {
           />
         </View>
         <ScrollView style={styles.scrollView}>
-          <FlatList
-            data={filteredData.slice(0, 6)}
-            renderItem={({item}) => renderItem({item, navigation})}
-            keyExtractor={(item, index) => index.toString()}
-          />
+          {isLoading ? (
+            <ActivityIndicator size="large" color={Colors.primary_clr} />
+          ) : (
+            <FlatList
+              data={filteredData.slice(0, 6)}
+              renderItem={({item}) => renderItem({item, navigation})}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          )}
         </ScrollView>
       </View>
     </BackgroundImage>
